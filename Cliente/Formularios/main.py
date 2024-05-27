@@ -4,11 +4,13 @@ from tkinter import ttk
 import ttkbootstrap as tb
 
 
+
 class App(tk.Tk):
 # __init__ function for class tkinterApp 
     def __init__(self, *args, **kwargs): 
         from FormularioCursos import CursosApp
         from FormularioUsuarios import NombresDB
+
          
         # __init__ function for class Tk
         tk.Tk.__init__(self, *args, **kwargs)

@@ -8,24 +8,33 @@ from ModulosEvaluacion.ModuloOrdenarElementos import ModuloOrdenarElementos
 from ModulosEvaluacion.ModuloRespuestaCorta import ModuloRespuestaCorta
 from ModulosEvaluacion.ModuloVerdaderoFalso import ModuloVerdaderoFalso
 from ModulosEvaluacion.ModuloRellenarEspacios  import ModuloRellenarEspacios
-
+from ModulosEvaluacion.CuentaRegresivaEvaluacion import CountdownApp
 #from ModulosEvaluacion.ModuloRelacionarElementos import ModuloRelacionarElementos
 
 
 
 class FormularioEvaluacion(tk.Frame):
-    def __init__(self, parent, controller,dni,idevaluacion):
+    def __init__(self, parent, controller,dni,idevaluacion,rol,nombre,duracionevaluacion):
         tk.Frame.__init__(self, parent)
         
         self.parent = parent
         self.dni=dni
         self.idevaluacion=idevaluacion
         self.controller=controller
-
+        self.rol=rol
+        self.nombre=nombre
+        self.duracionevaluacion=duracionevaluacion
         self.create_widgets()
 
         
     def create_widgets(self):
+        from FormularioEvaluacionesCurso import FormularioCursoEvaluaciones
+        # Iniciar la cuenta regresiva
+        
+      
+        countdown_minutes = self.duracionevaluacion  # Duración de la cuenta regresiva en minutos
+        self.countdown_app = CountdownApp(self, countdown_minutes)
+        self.countdown_app.pack(side="right", pady=0)
         consulta = "SELECT DISTINCT " \
             "P.ENUNCIADO,TP.TIPO,PEA.IDPREGUNTAEVALUACIONALUMNO " \
             "FROM PREGUNTAEVALUACIONALUMNO PEA " \
@@ -37,11 +46,17 @@ class FormularioEvaluacion(tk.Frame):
             "JOIN ALUMNOGRUPOCURSO AGC ON EA.IDALUMNOGRUPOCURSO=AGC.IDALUMNOGRUPOCURSO AND AGC.ALUMNO_DNI= '" + self.dni + "'"
          
         
+        
+        
         preguntas = self.preguntas(consulta)
         
         for pregunta in preguntas:
          enunciado=self.imprimirEnunciado(pregunta[0],pregunta[1])
          opciones=self.imprimirOpcionesTipoPregunta(pregunta[1],pregunta[2],pregunta[0])
+         
+           # Crear el botón "Regresar"
+        button_finalizar = ttk.Button(self, text="Finalizar", command=lambda: self.show_frame(FormularioCursoEvaluaciones,""))
+        button_finalizar.pack(pady=20)
         
 
     
@@ -95,9 +110,19 @@ class FormularioEvaluacion(tk.Frame):
         
     
     def show_frame(self, frame_class,idpreguntaevaluacion):
-            
-        frame = frame_class(self, self.controller,idpreguntaevaluacion)
+        from FormularioEvaluacionesCurso import FormularioCursoEvaluaciones
+        if frame_class== FormularioCursoEvaluaciones:
+          frame=self.limpiar_frame()
+          frame = frame_class(self, self.controller,self.dni,self.rol,self.nombre)
+        else:
+            frame = frame_class(self, self.controller,idpreguntaevaluacion)
+        #frame = frame_class(self, self.controller,idpreguntaevaluacion)
         frame.pack(fill="both", expand=True) 
+        
+    def limpiar_frame(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+
     
     
     

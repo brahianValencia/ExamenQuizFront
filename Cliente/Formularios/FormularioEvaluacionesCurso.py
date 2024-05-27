@@ -5,9 +5,8 @@ from datetime import datetime
 
 from FormularioEvaluacion import FormularioEvaluacion
 
-
 class FormularioCursoEvaluaciones(tk.Frame):
-    def __init__(self, parent, controller,dni):
+    def __init__(self, parent, controller,dni,rol,nombre):
       
         tk.Frame.__init__(self, parent)
         
@@ -17,12 +16,19 @@ class FormularioCursoEvaluaciones(tk.Frame):
         self.parent = parent
         self.dni=dni
         self.idevaluacion=""
+        self.rol=rol
+        self.nombre=nombre
         self.controller=controller
+        self.duracion=0
 
         self.create_widgets()
 
         
     def create_widgets(self):
+        from FormularioCursos import CursosApp
+        from FormularioEditarEvaluacion import EditEvaluation
+
+
         consulta = "SELECT " \
                 "E.NOMBRE,E.DESCRIPCION,E.PORCENTAJECURSO,E.CANTIDADPREGUNTASGANAR,E.CANTIDADPREGUNTASALUMNO," \
                 "E.FECHAHORAINICIO,E.FECHAHORAFINALIZACION,D.NOMBRES||' '||D.APELLIDOS NOMBRE_DOCENTE,TE.TIPO,C.CATEGORIA," \
@@ -33,6 +39,17 @@ class FormularioCursoEvaluaciones(tk.Frame):
                 "JOIN TIPOEVALUACION TE ON E.IDTIPOEVALUACION=TE.IDTIPOEVALUACION " \
                 "JOIN CATEGORIA C ON E.IDCATEGORIA=C.IDCATEGORIA " \
                 "JOIN ALUMNOGRUPOCURSO AGC ON EA.IDALUMNOGRUPOCURSO=AGC.IDALUMNOGRUPOCURSO AND ALUMNO_DNI='" + self.dni + "'"
+        
+        if self.rol=='DOCENTE':
+            consulta = "SELECT " \
+                    "E.NOMBRE,E.DESCRIPCION,E.PORCENTAJECURSO,E.CANTIDADPREGUNTASGANAR,E.CANTIDADPREGUNTASALUMNO," \
+                    "E.FECHAHORAINICIO,E.FECHAHORAFINALIZACION,D.NOMBRES||' '||D.APELLIDOS NOMBRE_DOCENTE,TE.TIPO,C.CATEGORIA," \
+                    "E.DURACION, EA.IDEVALUACIONALUMNO " \
+                    "FROM EVALUACIONALUMNO EA " \
+                    "JOIN EVALUACION E ON EA.IDEVALUACION=E.IDEVALUACION " \
+                    "JOIN DOCENTE D ON D.DNI=E.DOCENTE_DNI AND D.DNI='" + self.dni + "'" \
+                    "JOIN TIPOEVALUACION TE ON E.IDTIPOEVALUACION=TE.IDTIPOEVALUACION " \
+                    "JOIN CATEGORIA C ON E.IDCATEGORIA=C.IDCATEGORIA " 
 
         evaluaciones = self.mostrar_evaluaciones(consulta)
 
@@ -83,14 +100,24 @@ class FormularioCursoEvaluaciones(tk.Frame):
             eval_alumno_label = ttk.Label(evaluacion_frame, text=f"id: {evaluacion[11]} ", wraplength=evaluacion_frame.winfo_screenwidth(), anchor="w")
             eval_alumno_label.pack(side="top", fill="x", padx=5)
             
-            
-            evaluacion_button = ttk.Button(evaluacion_frame, text="Presentar")
-            evaluacion_button.pack(side="top", fill="x", padx=25)
-            
-            if(datetime.now() < evaluacion[6]):
-                evaluacion_button.config(text="Evaluar", state="normal", style="TButton",command=lambda: self.show_frame(FormularioEvaluacion,evaluacion[11])) #Lo puede presentar
+            self.duracion=evaluacion[10]
+            if self.rol=='DOCENTE':
+                editar_evaluacion_button = ttk.Button(evaluacion_frame, text="Editar",command=lambda e=evaluacion: self.show_frame(EditEvaluation,e[11],e))
+                editar_evaluacion_button.pack(side="top", fill="x", padx=25)
             else:
-                evaluacion_button.config(text="Evaluar", state="disabled", style="Disabled.TButton") #No lo puede presentar
+                evaluacion_button = ttk.Button(evaluacion_frame, text="Presentar")
+                evaluacion_button.pack(side="top", fill="x", padx=25)
+                
+                if(datetime.now() < evaluacion[6]):
+                    evaluacion_button.config(text="Evaluar", state="normal", style="TButton",command=lambda: self.show_frame(FormularioEvaluacion,evaluacion[11],[])) #Lo puede presentar
+                else:
+                    evaluacion_button.config(text="Evaluar", state="disabled", style="Disabled.TButton") #No lo puede presentar
+            
+        # Crear el botón "Regresar"
+        button_regresar = ttk.Button(self, text="Regresar", command=lambda: self.show_frame(CursosApp,evaluacion[11],[]))
+        button_regresar.pack(pady=20)
+               
+            
     
 
         
@@ -113,10 +140,20 @@ class FormularioCursoEvaluaciones(tk.Frame):
         connection.close()  
         return ArrayValues
     
-    def show_frame(self, frame_class,idevaluacion):
+    def show_frame(self, frame_class,idevaluacion,datosevaluacion):
+        from FormularioCursos import CursosApp
+        from FormularioEditarEvaluacion import EditEvaluation
+
+
         frame=self.limpiar_frame()
-        
-        frame = frame_class(self, self.controller,self.dni,idevaluacion)
+        if frame_class==CursosApp:
+            frame = frame_class(self, self.controller,self.dni,self.rol,self.nombre)
+        elif frame_class==EditEvaluation:
+            frame = frame_class(self, self.controller,self.dni,self.rol,self.nombre,datosevaluacion)
+        elif frame_class==FormularioEvaluacion:
+            frame = frame_class(self, self.controller,self.dni,idevaluacion,self.rol,self.nombre,self.duracion)
+        else:
+            frame = frame_class(self, self.controller,self.dni,idevaluacion,self.rol,self.nombre)
         frame.pack(fill="both", expand=True) 
         
     def limpiar_frame(self):

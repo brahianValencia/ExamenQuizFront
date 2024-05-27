@@ -3,7 +3,7 @@ from tkinter import ttk
 import sys
 import cx_Oracle
 
-sys.path.insert(0, 'C:/Users/Crist/OneDrive/Documentos/conectarBDphp/Cliente/PeticionesCombobox')
+sys.path.insert(0, 'C:/Users/Crist/OneDrive/Documentos/FrontExamenQuizBd2/Cliente/PeticionesCombobox')
 from PeticionesComboboxServidor import opcionesComboBox
 
 

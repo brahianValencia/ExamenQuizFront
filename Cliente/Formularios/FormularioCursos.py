@@ -126,7 +126,7 @@ class CursosApp(tk.Frame):
         if frame_class==NombresDB:
             frame = frame_class(self, self.controller)
         elif frame_class!=CreateEvaluation:
-            frame = frame_class(self, self.controller,self.dni)
+            frame = frame_class(self, self.controller,self.dni,self.rol,self.nombre)
         else: 
             frame = frame_class(self, self.controller,self.dni,self.rol,self.nombre)
             
