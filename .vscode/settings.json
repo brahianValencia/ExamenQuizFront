@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./Cliente/SpecialWidgets",
+        "./Cliente/PeticionesCombobox"
+    ]
+}
