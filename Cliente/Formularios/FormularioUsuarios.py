@@ -40,7 +40,7 @@ class NombresDB(tk.Frame):
         
         self.combo_nombres_docente.pack(pady=20)
         
-        button = ttk.Button(self, text="Cambiar vista",
+        button = ttk.Button(self, text="Iniciar sesión",
                              command=lambda: self.show_frame(CursosApp))
         button.pack(pady=20)
 

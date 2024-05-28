@@ -53,11 +53,15 @@ class CreateEvaluation(tk.Frame):
         self.top_frame.pack(side="top", fill="x")
 
         # Crear el botón "Regresar" y agregarlo al nuevo marco
+          
         button_regresar = ttk.Button(self.top_frame, text="Regresar", command=lambda: self.show_frame(CursosApp))
-        button_regresar.pack(side="top",pady=0)
+        button_regresar.pack(side="left",pady=0)
+        
+        self.create_button = ttk.Button(self.top_frame, text="Crear evaluación", command=self.create_evaluation)
+        self.create_button.pack(side="right",padx=0,pady=0)
         
         
-        self.title_label = ttk.Label(self.main_frame, text="Creación de evaluación", font=("Arial", 17, "bold"))
+        self.title_label = ttk.Label(self.main_frame, text="Creación de evaluación", font=("Arial", 12, "bold"))
         self.title_label.pack(pady=0)
 
         self.evaluation_info_frame = ttk.LabelFrame(self.main_frame, text="Información de la evaluación")
@@ -90,37 +94,50 @@ class CreateEvaluation(tk.Frame):
         self.questions_to_pass_label.grid(row=3, column=0, padx=10, pady=10, sticky="w")
         self.questions_to_pass_entry = ttk.Entry(self.evaluation_info_frame)
         self.questions_to_pass_entry.grid(row=3, column=1, padx=10, pady=10)
+        
+        
+         
+        # Cantidad de preguntas para el alumno
+        self.questions_to_student = ttk.Label(self.evaluation_info_frame, text="Cantidad de preguntas para el alumno")
+        self.questions_to_student.grid(row=4, column=0, padx=10, pady=10, sticky="w")
+        
+        
+        self.questions_to_student_entry = ttk.Entry(self.evaluation_info_frame)
+        self.questions_to_student_entry.grid(row=4, column=1, padx=10, pady=10)
+        
+
+        
 
         # Fecha y hora de inicio   date_pattern='yyyy-mm-dd
         self.start_date_label = ttk.Label(self.evaluation_info_frame, text="Fecha de inicio")
-        self.start_date_label.grid(row=4, column=0, padx=10, pady=0, sticky="w")
+        self.start_date_label.grid(row=5, column=0, padx=10, pady=0, sticky="w")
         self.start_date_entry =tb.DateEntry(self.evaluation_info_frame,bootstyle="dark", dateformat='%x')  
-        self.start_date_entry.grid(row=4, column=1, padx=10, pady=0)
+        self.start_date_entry.grid(row=5, column=1, padx=10, pady=0)
 
         self.start_time_label = ttk.Label(self.evaluation_info_frame, text="Hora de inicio")
-        self.start_time_label.grid(row=5, column=0, padx=10, pady=10, sticky="w")
+        self.start_time_label.grid(row=6, column=0, padx=10, pady=10, sticky="w")
         
         self.updatable_start_time_label = ttk.Label(self.evaluation_info_frame, text="")
-        self.updatable_start_time_label.grid(row=5, column=1, padx=10, pady=0, sticky="n")
+        self.updatable_start_time_label.grid(row=6, column=1, padx=10, pady=0, sticky="n")
         
         
         self.start_time_button = tk.Button(self.evaluation_info_frame, text="Hora", command=lambda:get_time(self.evaluation_info_frame,self.updatable_start_time_label))
-        self.start_time_button.grid(row=5, column=1, padx=10, pady=10,sticky="e")
+        self.start_time_button.grid(row=6, column=2, padx=10, pady=10,sticky="e")
 
         # Fecha y hora de finalización
         self.end_date_label = ttk.Label(self.evaluation_info_frame, text="Fecha de finalización")
-        self.end_date_label.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+        self.end_date_label.grid(row=7, column=0, padx=10, pady=10, sticky="w")
         self.end_date_entry = tb.DateEntry(self.evaluation_info_frame,bootstyle="dark", dateformat='%x')  
-        self.end_date_entry.grid(row=6, column=1, padx=10, pady=0)
+        self.end_date_entry.grid(row=7, column=1, padx=10, pady=0)
 
         self.end_time_label = ttk.Label(self.evaluation_info_frame, text="Hora de finalización")
-        self.end_time_label.grid(row=7, column=0, padx=10, pady=10, sticky="w")
+        self.end_time_label.grid(row=8, column=0, padx=10, pady=10, sticky="w")
         
         self.updatable_end_time_label = ttk.Label(self.evaluation_info_frame, text="")
-        self.updatable_end_time_label.grid(row=7, column=1, padx=10, pady=0, sticky="n")
+        self.updatable_end_time_label.grid(row=8, column=1, padx=10, pady=0, sticky="n")
         
         self.end_time_button = tk.Button(self.evaluation_info_frame, text="Hora", command=lambda:get_time(self.evaluation_info_frame,self.updatable_end_time_label))
-        self.end_time_button.grid(row=7, column=1, padx=10, pady=10,sticky="e")
+        self.end_time_button.grid(row=8, column=2, padx=10, pady=10,sticky="e")
         
    
 

@@ -24,7 +24,7 @@ class EditEvaluation(tk.Frame):
         self.rol = rol
         self.nombre = nombre
         self.datosEvaluacion=datosevaluacion
-        print(self.datosEvaluacion)
+       
 
 
         # Crear los marcos principales
@@ -36,8 +36,7 @@ class EditEvaluation(tk.Frame):
         # Crear los widgets de detalles de la evaluación
         self.create_evaluation_details_widgets()
 
-        # Crear el botón de creación de evaluación
-        self.create_create_button()
+        
 
 
     
@@ -55,10 +54,12 @@ class EditEvaluation(tk.Frame):
 
         # Crear el botón "Regresar" y agregarlo al nuevo marco
         button_regresar = ttk.Button(self.top_frame, text="Regresar", command=lambda: self.show_frame(CursosApp))
-        button_regresar.pack(side="top",pady=0)
+        button_regresar.pack(side="left",pady=0)
         
+        self.update_button = ttk.Button(self.top_frame, text="Actualizar evaluación", command=self.create_evaluation)
+        self.update_button.pack(side="right",padx=0,pady=0)
         
-        self.title_label = ttk.Label(self.main_frame, text="Editar evaluación", font=("Arial", 17, "bold"))
+        self.title_label = ttk.Label(self.main_frame, text="Editar evaluación", font=("Arial", 14, "bold"))
         self.title_label.pack(pady=0)
 
         self.evaluation_info_frame = ttk.LabelFrame(self.main_frame, text="Información de la evaluación")
@@ -123,7 +124,7 @@ class EditEvaluation(tk.Frame):
         self.start_date_label = ttk.Label(self.evaluation_info_frame, text="Fecha de inicio")
         self.start_date_label.grid(row=5, column=0, padx=10, pady=0, sticky="w")
         
-        self.start_date_entry =tb.DateEntry(self.evaluation_info_frame,bootstyle="dark", dateformat='%x')
+        self.start_date_entry =tb.DateEntry(self.evaluation_info_frame,bootstyle="dark", dateformat='%x',startdate=self.datosEvaluacion[5].date())
         
 
         self.start_date_entry.grid(row=5, column=1, padx=10, pady=0)
@@ -131,7 +132,7 @@ class EditEvaluation(tk.Frame):
         self.start_time_label = ttk.Label(self.evaluation_info_frame, text="Hora de inicio")
         self.start_time_label.grid(row=6, column=0, padx=10, pady=10, sticky="w")
         
-        self.updatable_start_time_label = ttk.Label(self.evaluation_info_frame, text="")
+        self.updatable_start_time_label = ttk.Label(self.evaluation_info_frame, text=(self.datosEvaluacion[5].time()).strftime("%H:%M:%S") )
         self.updatable_start_time_label.grid(row=6, column=1, padx=10, pady=0, sticky="n")
         
         
@@ -141,17 +142,17 @@ class EditEvaluation(tk.Frame):
         # Fecha y hora de finalización
         self.end_date_label = ttk.Label(self.evaluation_info_frame, text="Fecha de finalización")
         self.end_date_label.grid(row=7, column=0, padx=10, pady=10, sticky="w")
-        self.end_date_entry = tb.DateEntry(self.evaluation_info_frame,bootstyle="dark", dateformat='%x')  
+        self.end_date_entry = tb.DateEntry(self.evaluation_info_frame,bootstyle="dark", dateformat='%x',startdate=self.datosEvaluacion[6].date())  
         self.end_date_entry.grid(row=7, column=1, padx=10, pady=0)
 
         self.end_time_label = ttk.Label(self.evaluation_info_frame, text="Hora de finalización")
-        self.end_time_label.grid(row=7, column=2, padx=10, pady=10, sticky="w")
+        self.end_time_label.grid(row=8, column=0, padx=10, pady=10, sticky="w")
         
-        self.updatable_end_time_label = ttk.Label(self.evaluation_info_frame, text="")
-        self.updatable_end_time_label.grid(row=8, column=0, padx=10, pady=0, sticky="n")
+        self.updatable_end_time_label = ttk.Label(self.evaluation_info_frame, text=(self.datosEvaluacion[6].time()).strftime("%H:%M:%S"))
+        self.updatable_end_time_label.grid(row=8, column=1, padx=10, pady=0, sticky="n")
         
         self.end_time_button = tk.Button(self.evaluation_info_frame, text="Hora", command=lambda:get_time(self.evaluation_info_frame,self.updatable_end_time_label))
-        self.end_time_button.grid(row=8, column=1, padx=10, pady=10,sticky="e")
+        self.end_time_button.grid(row=8, column=2, padx=10, pady=10,sticky="e")
         
    
 
@@ -162,7 +163,10 @@ class EditEvaluation(tk.Frame):
         self.evaluation_type_label = ttk.Label(self.evaluation_details_frame, text="Tipo de evaluación")
         self.evaluation_type_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
         self.evaluation_type_combobox = ttk.Combobox(self.evaluation_details_frame, values= opcionesComboBox('TIPOEVALUACION', 'TIPO'), state="readonly")
-
+        
+        # Select an option by its text
+        self.evaluation_type_combobox.set(self.datosEvaluacion[8]) 
+        
 
         self.evaluation_type_combobox.grid(row=0, column=1, padx=10, pady=0)
 
@@ -170,14 +174,15 @@ class EditEvaluation(tk.Frame):
         self.category_label = ttk.Label(self.evaluation_details_frame, text="Categoría")
         self.category_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
         self.category_combobox = ttk.Combobox(self.evaluation_details_frame, values=opcionesComboBox('CATEGORIA', 'CATEGORIA'), state="readonly")
+        self.category_combobox.set(self.datosEvaluacion[9]) 
+        
         self.category_combobox.grid(row=1, column=1, padx=10, pady=0)
         
         self.select_questions_button = ttk.Button(self.main_frame, text="Seleccionar preguntas",command=lambda: self.show_frame(SelectQuestions))
         self.select_questions_button.pack(padx=40,pady=0,side="right")
 
-    def create_create_button(self):
-        self.create_button = ttk.Button(self.main_frame, text="Crear evaluación", command=self.create_evaluation)
-        self.create_button.pack(pady=0)
+   
+      
 
     def create_evaluation(self):
         # Aquí puedes agregar la lógica para crear la evaluación
